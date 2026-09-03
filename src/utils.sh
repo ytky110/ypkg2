@@ -6,7 +6,7 @@ _usage() {
 
     case "$op" in
     install)
-        echo "usage: ypkg2 install <TARGET>..."
+        echo "usage: ypkg2 install [-f] <TARGET>..."
         ;;
     remove)
         echo "usage: ypkg2 remove <TARGET>..."
@@ -69,21 +69,8 @@ _makedirs() {
 }
 
 _cleartmp() {
-    rm -rf $prefix_path/tmp
-    mkdir $prefix_path/tmp || echo "ypkg2: error making tmp"
-    return 0
-}
-
-_getparam() {
-    _param_name="$1"
-    _path="$2"
-
-    if ! [ -f $path/.pkginfo ]
-    then
-        echo "ypkg2: .pkginfo doens't exist in the package or is a directory."
-        exit 1
-    fi
-    grep "^$param_name=" "$path/.pkginfo" | cut -d = -f 2
+    rm -rf "$prefix_path/tmp"
+    mkdir "$prefix_path/tmp" || echo "ypkg2: error making tmp"
     return 0
 }
 

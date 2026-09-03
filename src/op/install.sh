@@ -11,6 +11,7 @@ _install() {
         if [ "$_path" = -f ]
         then
             _force="YES"
+            continue
         fi
 
         _filename=`basename $_path`
@@ -26,12 +27,24 @@ _install() {
             exit 1
         fi
 
-        _pkgversion=`_getparam VERSION "$prefix_path/tmp"`
-        if [ "$_pkgversion" = 2 ]
+        if ! [ -f "$prefix_path/tmp/.pkginfo" ]
+        then
+            echo "ypkg2: .pkginfo doens't exist in the package or is a directory."
+            exit 1
+        fi
+
+        if ! . "$prefix_path/tmp/.pkginfo"
+        then
+            echo "ypkg2: Failed to read .pkginfo"
+            echo "ypkg2: It has to be a sh script defining variables"
+            exit 1
+        fi
+
+        if [ "$pkgversion" = 2 ]
         then
             _install_v2 "$_force"
         else
-            _install_v1
+            _install_v1 "$_force"
         fi
     done
 
@@ -40,30 +53,23 @@ _install() {
 
 
 _install_v1() {
-    _name=`_getparam name "$prefix_path/tmp"`
-
-    if [ -d "$prefix_path/pkgs/$_name" ]
+    if [ -d "$prefix_path/pkgs/$name" ]
     then
-        echo "ypkg2: The v1-package '$_name' already exists"
+        echo "ypkg2: The v1-package '$name' already exists"
         exit 1
     fi
 
-    echo "Adding v1-package '$_name'..."
-    cp -R "$prefix_path/tmp" "$prefix_path/pkgs/$_name"
-    echo "Successfuly installed $_name."
+    echo "Adding v1-package '$name'..."
+    cp -R "$prefix_path/tmp" "$prefix_path/pkgs/$name"
+    echo "Successfuly installed $name."
 
     return 0
 }
 
 _install_v2() {
-    _name=`_getparam name "$prefix_path/tmp"`
-    _version=`_getparam version "$prefix_path/tmp"`
-    _arch=`_getparam arch "$prefix_path/tmp"`
-    _os=`_getparam os "$prefix_path/tmp"`
-
-    if [ -d "$prefix_path/pkg2/$_name/$_version" ]
+    if [ -d "$prefix_path/pkg2/$name/$version" ]
     then
-        echo "ypkg2: The v2-package '$_name' of version '$_version' is already installed."
+        echo "ypkg2: The v2-package '$name' version '$version' is already installed."
         exit 1
     fi
 
@@ -71,33 +77,32 @@ _install_v2() {
     then
         echo "ypkg2: Architecture and OS verification skipped."
     else
-        _install_check_architecture "$_arch" "$_os"
+        _install_check_architecture
     fi
 
-    mkdir -p "$prefix_path/pkg2/$_name/"
-    cp -R "$prefix_path/tmp" "$prefix_path/pkg2/$_name/$_version"
+    mkdir -p "$prefix_path/pkg2/$name/"
+    echo "Adding v2-package '$name' version '$version'..."
+    cp -R "$prefix_path/tmp" "$prefix_path/pkg2/$name/$version"
+    echo "Successfuly installed $name/$version."
 
     return 0
 }
 
 _install_check_architecture() {
-    _arch="$1"
-    _os="$2"
-
-    if ! [ -z "$_arch" -o "$_arch" = any ]
+    if ! [ -z "$arch" -o "$arch" = any ]
     then
         _host_arch=`_get_host_info arch`
-        if [ "$_arch" != "$_host_arch" ]
+        if [ "$arch" != "$_host_arch" ]
         then
-            echo "ypkg2: Not for this $_host_arch computer: $_arch"
+            echo "ypkg2: Not for this $_host_arch computer: $arch"
             exit 1
         fi
     fi
 
-    if ! [ -z "$_os" -o "$_os" = any ]
+    if ! [ -z "$os" -o "$os" = any ]
     then
         _host_os=`_get_host_info os`
-        if [ "$_os" != "$_host_os" ]
+        if [ "$os" != "$_host_os" ]
         then
             echo "ypkg2: Not for $_host_os: $os"
             exit 1
