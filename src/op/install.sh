@@ -1,7 +1,6 @@
 _install() {
     if [ $# = 0 ]
     then
-        echo "ypkg2: No package specified."
         _badusage install
     fi
 

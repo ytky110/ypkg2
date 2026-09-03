@@ -26,7 +26,14 @@ _enable() {
             _name=`dirname "$_pkg"`
             _version=`basename "$_pkg"`
 
-            echo "Enabling $_name version $_version"
+            if [ -e "$_pkgdir/$_name/$_version/.enabled" ]
+            then
+                echo "ypkg2: The v2-package $_name version $_version is already enabled."
+                echo "ypkg2: Please run 'ypkg2 disable $_name/$_version' to disable it."
+                exit 1
+            fi
+
+            echo "Enabling v2-package $_name version $_version..."
             if ! stow -v --ignore='.pkginfo' -d "$_pkgdir/$_name" -t "$prefix_path/local" "$_version"
             then
                 echo "ypkg2: Failed to enable $_name version $_version"

@@ -21,7 +21,7 @@ _usage() {
         echo "usage: ypkg2 switch <FROM> <TO>..."
         ;;
     list)
-        echo "usage: ypkg2 list"
+        echo "usage: ypkg2 list [-1 | -2] [-c]"
         ;;
     getprefix)
         echo "usage: ypkg2 getprefix"
@@ -41,7 +41,7 @@ _usage() {
 }
 
 _badusage() {
-    echo `_usage "$op"`
+    echo `_usage "$1"`
     echo "Use 'ypkg2 --help' for more information."
     exit 2
 }
