@@ -69,12 +69,12 @@ _list_v1() {
         if [ -e "$_pkg/.enabled" ]
         then
             [ "$_color" = YES ] \
-                && printf "%s\t\033[1m\033[32menabled\033[0m" "$_pkgname" \
-                || printf "%s\tenabled" "$_pkgname"
+                && printf "%s\t\033[1m\033[32menabled\033[0m\n" "$_pkgname" \
+                || printf "%s\tenabled\n" "$_pkgname"
         else
             [ "$_color" = YES ] \
-                && printf "%s\t\033[1m\033[31mdisabled\033[0m" "$_pkgname" \
-                || printf "%s\tdisabled" "$_pkgname"
+                && printf "%s\t\033[1m\033[31mdisabled\033[0m\n" "$_pkgname" \
+                || printf "%s\tdisabled\n" "$_pkgname"
         fi
     done | column -t
     return 0
@@ -87,7 +87,6 @@ _list_v2() {
     do
         if ! [ -d "$_pkg" ]
         then
-            echo "debug: $_pkg"
             [ "$_color" = YES ] \
                 && printf "\033[31mNo package installed.\033[0m" \
                 || printf "No package installed."
