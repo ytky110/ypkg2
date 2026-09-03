@@ -1,23 +1,41 @@
-pkgversion=2 is required.
+bin/
+etc/
+include/
+lib/
+share/
+var/
+    These directories contains files will be symlinked to PREFIX/local/
+    I use only bin/ directory... (-_-)
 
-name= is the name of package.
-version= is the version of package.
-arch= is the required architecture of the machine.
-    - any or nothing        For any machine
-    - x86_64                AMD 64 bit architecture
-    - i386                  Intel x86 architecture
-    - aarch64               ARM 64 bit architecture
-    - armv7l                ARM 32 bit architecture
-os= is the required OS of the machine.
-    - any or nothing        For any OS
-    - linux                 Linux
-    - macos                 macOS (Darwin)
-    - freebsd               FreeBSD
+.pkginfo
 
-example:
+    pkgversion=2 is required.
 
-pkgversion=2
-name=foo
-version=1.2
-arch=x86_64
-os=linux
+    name= is the name of package.
+    version= is the version of package.
+    arch= is the required architecture of the machine.
+        - any or nothing        For any machine
+        - x86_64                AMD 64 bit architecture
+        - i386                  Intel x86 architecture
+        - aarch64               ARM 64 bit architecture
+        - armv7l                ARM 32 bit architecture
+    os= is the required OS of the machine.
+        - any or nothing        For any OS
+        - linux                 Linux
+        - macos                 macOS (Darwin)
+        - freebsd               FreeBSD
+
+    example:
+
+    pkgversion=2
+    name=foo
+    version=1.2
+    arch=x86_64
+    os=linux
+
+Example
+    . package
+        bin/
+            foo
+        lib/
+        .pkginfo

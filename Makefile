@@ -1,5 +1,5 @@
 TARGET = bin/ypkg2
-SRCS   = src/*.sh src/op/*.sh
+SRCS   = src/main.sh src/utils.sh src/op/*.sh
 
 $(TARGET): $(SRCS)
 	mkdir -p bin

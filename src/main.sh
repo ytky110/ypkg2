@@ -1,6 +1,6 @@
 #!/bin/sh
 
-version="0.2.1"
+version="0.3.0"
 config_file="$HOME/.config/ypkg.conf"
 prefix_path="$HOME/.ypkg2.d"
 
@@ -52,7 +52,7 @@ main() {
         _getprefix "$@"
         ;;
     help|-h|--help)
-        for i in general install enable disable list getprefix help version
+        for i in general install enable disable switch list getprefix help version
         do
             _usage "$i"
         done

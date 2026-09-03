@@ -18,7 +18,7 @@ _usage() {
         echo "usage: ypkg2 disable <TARGET>..."
         ;;
     switch)
-        echo "usage: ypkg2 switch <FROM> <TO>..."
+        echo "usage: ypkg2 switch <FROM> <TO>"
         ;;
     list)
         echo "usage: ypkg2 list [-1 | -2] [-c]"
