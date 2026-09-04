@@ -26,6 +26,14 @@ _disable() {
             _name=`dirname "$_pkg"`
             _version=`basename "$_pkg"`
 
+            # when 'ypkg2 enable foo', foo is stored in _version and _name is '.'
+            if [ "$_name" = . ]
+            then
+                echo "ypkg2: Please specify version."
+                echo "ypkg2: You need to specify like foo/1.2"
+                exit 1
+            fi
+
             if [ ! -e "$_pkgdir/$_name/$_version/.enabled" ]
             then
                 echo "ypkg2: The v2-package $_name version $_version is not enabled."
