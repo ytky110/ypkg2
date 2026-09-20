@@ -21,7 +21,7 @@ _usage() {
         echo "usage: ypkg2 switch <FROM> <TO>"
         ;;
     list)
-        echo "usage: ypkg2 list [-1 | -2] [-c]"
+        echo "usage: ypkg2 list [-1 | -2] [-c] [-n]"
         ;;
     getprefix)
         echo "usage: ypkg2 getprefix"

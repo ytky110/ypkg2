@@ -1,6 +1,6 @@
 #!/bin/sh
 
-version="0.3.1"
+version="0.4.0"
 config_file="$HOME/.config/ypkg.conf"
 prefix_path="$HOME/.ypkg2.d"
 

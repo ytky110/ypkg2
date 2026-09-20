@@ -1,6 +1,7 @@
 _list() {
     _version="1,2"
     _color="YES"
+    _only_name="NO"
 
     for _arg in "$@"
     do
@@ -26,6 +27,9 @@ _list() {
         -c)
             _color="NO"
             ;;
+        -n)
+            _only_name="YES"
+            ;;
         -*)
             echo "ypkg2: Unknown option. You can't concatenate options."
             _badusage list
@@ -36,18 +40,20 @@ _list() {
         esac
     done
 
+    _opt="$_color $_only_name"
+
     if [ "$_version" = 1 ]
     then
-        _list_v1 $_color
+        _list_v1 $_opt
     elif [ "$_version" = 2 ]
     then
-        _list_v2 $_color
+        _list_v2 $_opt
     else
         echo "pkgs/	(v1-package)"
-        _list_v1 $_color | sed 's/^/    /'
+        _list_v1 $_opt | sed 's/^/    /'
         echo
         echo "pkg2/	(v2-package)"
-        _list_v2 $_color | sed 's/^/    /'
+        _list_v2 $_opt | sed 's/^/    /'
     fi
 
     return 0
@@ -55,6 +61,7 @@ _list() {
 
 _list_v1() {
     _color="$1"
+    _only_name="$2"
 
     for _pkg in "$prefix_path"/pkgs/*
     do
@@ -66,15 +73,20 @@ _list_v1() {
 
         _pkgname=`basename $_pkg`
 
-        if [ -e "$_pkg/.enabled" ]
+        if [ "$_only_name" = YES ]
         then
-            [ "$_color" = YES ] \
-                && printf "%s\t\033[1m\033[32menabled\033[0m\n" "$_pkgname" \
-                || printf "%s\tenabled\n" "$_pkgname"
+            printf "%s\n" "$_pkgname"
         else
-            [ "$_color" = YES ] \
-                && printf "%s\t\033[1m\033[31mdisabled\033[0m\n" "$_pkgname" \
-                || printf "%s\tdisabled\n" "$_pkgname"
+            if [ -e "$_pkg/.enabled" ]
+            then
+                [ "$_color" = YES ] \
+                    && printf "%s\t\033[1m\033[32menabled\033[0m\n" "$_pkgname" \
+                    || printf "%s\tenabled\n" "$_pkgname"
+            else
+                [ "$_color" = YES ] \
+                    && printf "%s\t\033[1m\033[31mdisabled\033[0m\n" "$_pkgname" \
+                    || printf "%s\tdisabled\n" "$_pkgname"
+            fi
         fi
     done | column -t
     return 0
@@ -82,6 +94,7 @@ _list_v1() {
 
 _list_v2() {
     _color="$1"
+    _only_name="$2"
 
     for _pkg in "$prefix_path"/pkg2/*
     do
@@ -96,23 +109,27 @@ _list_v2() {
         _pkgname=`basename $_pkg`
 
         echo "$_pkgname"
-        for _pkgv in "$_pkg"/*
-        do
-            [ -d "$_pkgv" ] || break
 
-            _pkgversion=`basename $_pkgv`
+        if [ "$_only_name" != YES ]
+        then
+            for _pkgv in "$_pkg"/*
+            do
+                [ -d "$_pkgv" ] || break
 
-            if [ -e "$_pkgv/.enabled" ]
-            then
-                [ "$_color" = YES ] \
-                    && printf "%s\t\033[1m\033[32menabled\033[0m\n" "$_pkgversion" \
-                    || printf "%s\tenabled\n" "$_pkgversion"
-            else
-                [ "$_color" = YES ] \
-                    && printf "%s\t\033[1m\033[31mdisabled\033[0m\n" "$_pkgversion" \
-                    || printf "%s\tdisabled\n" "$_pkgversion"
-            fi
-        done | column -t | sed 's/^/    /'
+                _pkgversion=`basename $_pkgv`
+
+                if [ -e "$_pkgv/.enabled" ]
+                then
+                    [ "$_color" = YES ] \
+                        && printf "%s\t\033[1m\033[32menabled\033[0m\n" "$_pkgversion" \
+                        || printf "%s\tenabled\n" "$_pkgversion"
+                else
+                    [ "$_color" = YES ] \
+                        && printf "%s\t\033[1m\033[31mdisabled\033[0m\n" "$_pkgversion" \
+                        || printf "%s\tdisabled\n" "$_pkgversion"
+                fi
+            done | column -t | sed 's/^/    /'
+        fi
     done
     return 0
 }
