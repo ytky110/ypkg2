@@ -18,3 +18,5 @@ usage: ypkg2 getprefix
 usage: ypkg2 help
 usage: ypkg2 version
 ```
+
+Also see [yports](https://github.com/ytky110/yports), the ports tree with all ypkg2 packages to build.

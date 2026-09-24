@@ -88,7 +88,22 @@ _install_v2() {
 }
 
 _install_check_architecture() {
-    if ! [ -z "$arch" -o "$arch" = any ]
+    if [ "$arch" = unknown -o -z "$arch" ]
+    then
+        echo "ypkg2: The architecture of the package is 'unknown' or empty."
+        echo "ypkg2: You must set the target architecture before making the package."
+        echo "ypkg2: If it's for all architecture, set 'any'."
+        exit 1
+    fi
+    if [ "$os" = unknown -o -z "$os" ]
+    then
+        echo "ypkg2: The architecture of the package is 'unknown' or empty."
+        echo "ypkg2: You must set the target architecture before making the package."
+        echo "ypkg2: If it's for all architecture, set 'any'."
+        exit 1
+    fi
+
+    if ! [  "$arch" = any ]
     then
         _host_arch=`_get_host_info arch`
         if [ "$arch" != "$_host_arch" ]
