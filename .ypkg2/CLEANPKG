@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -x
+cd .ypkg2/
+
+filelist="bin"
+
+for file in $filelist
+do
+    if [ -d "./$file" ]
+    then
+        rm -fr "$file"
+    else
+        rm -f "$file"
+    fi
+done
