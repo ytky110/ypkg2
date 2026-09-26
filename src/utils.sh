@@ -57,7 +57,7 @@ _loadconfig() {
 
 _makedirs() {
     for dir in cache local/bin local/etc local/include \
-               local/lib local/shrae local/var pkgs pkg2 tmp
+               local/lib local/share local/var pkgs pkg2 tmp
     do
         if ! [ -d $prefix_path/$dir ]
         then
