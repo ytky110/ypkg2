@@ -7,57 +7,25 @@ _disable() {
 
     for _pkg in "$@"
     do
-        if [ -d "$prefix_path/pkgs/$_pkg" ]
+        _set_pkgdir_pkgversion "$_pkg"
+
+        if [ $pkgversion = 2 ]
         then
-            _pkgversion=1
-            _pkgdir="$prefix_path/pkgs"
-        elif [ -d "$prefix_path/pkg2/$_pkg" ]
-        then
-            _pkgversion=2
-            _pkgdir="$prefix_path/pkg2"
-        else
-            echo "ypkg2: Package $_pkg is not installed."
-            echo "ypkg2: If it's a v2-package, you need to specify like foo/1.2"
-            exit 1
-        fi
+            _get_name_version_pkg2 "$_pkg"
+            _should_be_enabled_pkg2
 
-        if [ $_pkgversion = 2 ]
-        then
-            _name=`dirname "$_pkg"`
-            _version=`basename "$_pkg"`
-
-            # when 'ypkg2 enable foo', foo is stored in _version and _name is '.'
-            if [ "$_name" = . ]
+            echo "Disabling v2-package $name version $version..."
+            if ! stow -D -v -d "$pkgdir/$name" -t "$prefix_path/local" "$version"
             then
-                echo "ypkg2: Please specify version."
-                echo "ypkg2: You need to specify like foo/1.2"
-                exit 1
-            fi
-
-            if [ ! -e "$_pkgdir/$_name/$_version/.enabled" ]
-            then
-                echo "ypkg2: The v2-package $_name version $_version is not enabled."
-                echo "ypkg2: Please run 'ypkg2 enable $_name/$_version' to enable it."
-                exit 1
-            fi
-
-            echo "Disabling v2-package $_name version $_version..."
-            if ! stow -D -v -d "$_pkgdir/$_name" -t "$prefix_path/local" "$_version"
-            then
-                echo "ypkg2: Failed to disable $_name version $_version"
-                echo "ypkg2: debug: stow -D -v -d \"$_pkgdir/$_name\" -t \"$prefix_path/local\" \"$_version\""
+                echo "ypkg2: Failed to disable $name version $version"
+                echo "ypkg2: debug: stow -D -v -d \"$pkgdir/$name\" -t \"$prefix_path/local\" \"$version\""
                 exit 1
             fi
         else
-            if [ ! -e "$_pkgdir/$_pkg/.enabled" ]
-            then
-                echo "ypkg2: The v1-package $_pkg is not enabled."
-                echo "ypkg2: Please run 'ypkg2 enable $_name/$_version' to enable it."
-                exit 1
-            fi
+            _should_be_enabled_pkg1 "$_pkg"
 
             echo "Disabling $_pkg v1-package..."
-            if ! stow -D -v -d "$_pkgdir" -t "$prefix_path/local" "$_pkg"
+            if ! stow -D -v -d "$pkgdir" -t "$prefix_path/local" "$_pkg"
             then
                 echo "ypkg2: Failed to enable $pkg package."
                 echo "ypkg2: debug: stow -D -v -d \"$prefix_path/pkgs\" -t \"$prefix_path/local\" \"$_pkg\""
@@ -65,7 +33,7 @@ _disable() {
             fi
         fi
 
-        rm "$_pkgdir/$_pkg/.enabled"
+        rm "$pkgdir/$_pkg/.enabled"
         echo "Successfully disabled $_pkg."
     done
 }
